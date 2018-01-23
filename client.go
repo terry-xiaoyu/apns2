@@ -37,6 +37,12 @@ var (
 	// TCPKeepAlive specifies the keep-alive period for an active network
 	// connection. If zero, keep-alives are not enabled.
 	TCPKeepAlive = 60 * time.Second
+
+	// TCPIdleTimeOut is the maximum amount of time an idle
+	// (keep-alive) connection will remain idle before closing
+	// itself.
+	// Zero means no limit.
+    TCPIdleTimeOut = 0 * time.Second
 )
 
 // DialTLS is the default dial function for creating TLS connections for
@@ -82,6 +88,7 @@ func NewClient(certificate tls.Certificate) *Client {
 	transport := &http2.Transport{
 		TLSClientConfig: tlsConfig,
 		DialTLS:         DialTLS,
+        IdleConnTimeout: TCPIdleTimeOut,
 	}
 	return &Client{
 		HTTPClient: &http.Client{

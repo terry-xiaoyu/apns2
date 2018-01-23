@@ -93,6 +93,12 @@ type Transport struct {
 	// to mean no limit.
 	MaxHeaderListSize uint32
 
+	// IdleConnTimeout is the maximum amount of time an idle
+	// (keep-alive) connection will remain idle before closing
+	// itself.
+	// Zero means no limit.
+	IdleConnTimeout time.Duration
+
 	// t1, if non-nil, is the standard library Transport using
 	// this transport. Its settings are used (but not its
 	// RoundTrip method, etc).
@@ -486,7 +492,7 @@ func (t *Transport) newClientConn(c net.Conn, singleUse bool) (*ClientConn, erro
 		wantSettingsAck:      true,
 		pings:                make(map[[8]byte]chan struct{}),
 	}
-	if d := t.idleConnTimeout(); d != 0 {
+	if d := t.IdleConnTimeout; d != 0 {
 		cc.idleTimeout = d
 		cc.idleTimer = time.AfterFunc(d, cc.onIdleTimeout)
 	}
